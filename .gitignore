@@ -1,0 +1,45 @@
+# Dependencies
+node_modules/
+apps/api/.venv/
+apps/api/__pycache__/
+**/__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Env & secrets
+.env
+.env.*
+!.env.example
+!apps/api/.env.example
+!apps/web/.env.example
+apps/api/.env
+apps/web/.env.local
+
+# Build
+apps/web/.next/
+apps/web/out/
+apps/api/dist/
+*.egg-info/
+.coverage
+htmlcov/
+
+# DB local
+*.db
+*.sqlite
+*.sqlite3
+
+# IDE / OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.log
+
+# Playwright
+apps/web/test-results/
+apps/web/playwright-report/
+
+# Uploads
+apps/api/uploads/

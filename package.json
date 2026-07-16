@@ -1,0 +1,23 @@
+{
+  "name": "kanban-retail",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Plataforma profesional de demanda no atendida para comercios (single-tenant)",
+  "workspaces": [
+    "apps/web",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:web": "npm run dev --workspace=web",
+    "build:web": "npm run build --workspace=web",
+    "lint:web": "npm run lint --workspace=web",
+    "typecheck:web": "npm run typecheck --workspace=web",
+    "dev:api": "cd apps/api && .venv/Scripts/uvicorn app.main:app --reload --port 8000",
+    "test:api": "cd apps/api && .venv/Scripts/python -m pytest -q",
+    "seed:api": "cd apps/api && .venv/Scripts/python -m scripts.seed",
+    "openapi": "node scripts/generate-openapi.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

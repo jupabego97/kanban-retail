@@ -1,0 +1,19 @@
+# Entornos virtuales
+.venv/
+venv/
+
+# Bytecode de Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Bases de datos locales
+*.db
+*.sqlite3
+
+# Configuracion local
+.env
+
+# Cache de tests
+.pytest_cache/
+.mypy_cache/
