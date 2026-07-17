@@ -8,7 +8,8 @@ watchPatterns = ["apps/api/**"]
 [deploy]
 # Migraciones ANTES de que el contenedor reciba tráfico / healthcheck.
 preDeployCommand = ["alembic upgrade head"]
-startCommand = "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+# $PORT debe expandirse en shell; sin sh -c uvicorn lo recibe literal.
+startCommand = "sh -c 'uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}'"
 healthcheckPath = "/api/health"
 healthcheckTimeout = 120
 restartPolicyType = "ON_FAILURE"
