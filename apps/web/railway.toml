@@ -1,9 +1,9 @@
 # Servicio frontend en Railway.
-# Settings del servicio:
-#   - Root Directory: /  (raíz del monorepo)
-#   - Config as Code path: /apps/web/railway.toml
+# Settings:
+#   - Root Directory: /  (raíz del monorepo; el Dockerfile copia apps/web)
+#   - Config as Code: /apps/web/railway.toml
 # Variables:
-#   - NEXT_PUBLIC_API_URL = https://TU-API.up.railway.app  (sin barra final)
+#   - NEXT_PUBLIC_API_URL = https://TU-API.up.railway.app
 
 [build]
 builder = "DOCKERFILE"
@@ -11,7 +11,7 @@ dockerfilePath = "apps/web/Dockerfile"
 watchPatterns = ["apps/web/**"]
 
 [deploy]
-startCommand = "sh -c 'node apps/web/server.js'"
+startCommand = "sh -c 'node server.js'"
 healthcheckPath = "/login"
 healthcheckTimeout = 120
 restartPolicyType = "ON_FAILURE"

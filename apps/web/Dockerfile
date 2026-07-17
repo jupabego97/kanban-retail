@@ -1,26 +1,20 @@
 # Build context: raíz del monorepo
-# Debian/glibc (no Alpine) para native deps de Tailwind/lightningcss.
+# El frontend se construye de forma autónoma (sin npm workspaces),
+# usando el package-lock de apps/web.
 
 FROM node:20-bookworm-slim AS builder
 WORKDIR /app
 
-# Dependencias del monorepo (workspaces)
-COPY package.json package-lock.json ./
-COPY apps/web/package.json ./apps/web/package.json
-COPY packages ./packages
-
+COPY apps/web/package.json apps/web/package-lock.json ./
 RUN npm ci
 
-# Código fuente del frontend
-COPY apps/web ./apps/web
+COPY apps/web/ ./
 
 ARG NEXT_PUBLIC_API_URL
 ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Ejecutar next vía node (evita fallos de PATH/.bin en workspaces)
-WORKDIR /app/apps/web
-RUN node ../../node_modules/next/dist/bin/next build --webpack
+RUN npx next build --webpack
 
 FROM node:20-bookworm-slim AS runner
 WORKDIR /app
@@ -33,11 +27,12 @@ ENV PORT=3000
 RUN addgroup --system --gid 1001 nodejs \
   && adduser --system --uid 1001 nextjs
 
-COPY --from=builder /app/apps/web/public ./apps/web/public
-COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
+# Con output standalone y tracing root = apps/web, server.js queda en /app
+COPY --from=builder /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
 USER nextjs
 EXPOSE 3000
 
-CMD ["sh", "-c", "node apps/web/server.js"]
+CMD ["sh", "-c", "node server.js"]

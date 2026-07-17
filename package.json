@@ -4,8 +4,7 @@
   "private": true,
   "description": "Plataforma profesional de demanda no atendida para comercios (single-tenant)",
   "workspaces": [
-    "apps/web",
-    "packages/*"
+    "apps/web"
   ],
   "scripts": {
     "dev:web": "npm run dev --workspace=web",
