@@ -1,6 +1,8 @@
 """Router de autenticacion: login, logout y perfil actual."""
 from __future__ import annotations
 
+from typing import Literal
+
 from fastapi import APIRouter, Depends, Response
 from sqlmodel import Session, select
 
@@ -16,17 +18,32 @@ from app.services.audit_service import record_audit
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
+SameSite = Literal["lax", "strict", "none"]
+
+
+def _cookie_kwargs() -> dict:
+    """Atributos compartidos de la cookie de sesion (set y delete deben coincidir)."""
+    samesite = settings.cookie_samesite  # type: ignore[assignment]
+    return {
+        "httponly": True,
+        "secure": settings.cookie_secure,
+        "samesite": samesite if samesite in {"lax", "strict", "none"} else "lax",
+        "path": "/",
+    }
+
 
 def _set_session_cookie(response: Response, token: str) -> None:
     response.set_cookie(
         key=settings.SESSION_COOKIE_NAME,
         value=token,
         max_age=settings.SESSION_MAX_AGE,
-        httponly=True,
-        secure=settings.COOKIE_SECURE,
-        samesite="lax",
-        path="/",
+        **_cookie_kwargs(),
     )
+
+
+def _clear_session_cookie(response: Response) -> None:
+    # Starlette/browsers requieren los mismos flags al borrar la cookie.
+    response.delete_cookie(settings.SESSION_COOKIE_NAME, **_cookie_kwargs())
 
 
 @router.post("/login", response_model=UserOut)
@@ -53,7 +70,7 @@ def login(
 @router.post("/logout")
 def logout(response: Response, current_user: User = Depends(get_current_user)) -> dict:
     """Cierra la sesion eliminando la cookie."""
-    response.delete_cookie(settings.SESSION_COOKIE_NAME, path="/")
+    _clear_session_cookie(response)
     return {"message": "Sesion cerrada."}
 
 

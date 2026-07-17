@@ -17,11 +17,19 @@ En el mismo proyecto Railway:
 
 La URL pública del servicio **web** es la de la aplicación (login, tablero, etc.).
 
-## 2. Actualizar la API (CORS)
+## 2. Actualizar la API (CORS + cookies)
 
-En el servicio **api**, variable:
+En el servicio **api**, variables:
 
-- `CORS_ORIGINS` = URL del frontend (ej. `https://web-production-xxxx.up.railway.app`)
+```text
+CORS_ORIGINS=https://TU-FRONTEND.up.railway.app
+ENVIRONMENT=production
+COOKIE_SECURE=true
+COOKIE_SAMESITE=none
+```
+
+Con front y API en hosts distintos de Railway, la sesión requiere `SameSite=None` + `Secure`
+(si no, el navegador no reenvía la cookie y verás “No autenticado o sesión expirada”).
 
 Redeploy de la API.
 

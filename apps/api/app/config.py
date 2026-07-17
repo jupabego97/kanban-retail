@@ -26,7 +26,11 @@ class Settings(BaseSettings):
     ENVIRONMENT: str = "development"
 
     # Cookies de sesion
+    # En produccion con front/API en dominios distintos (Railway) hace falta
+    # SameSite=None + Secure para que el navegador envie la cookie en fetch cross-site.
     COOKIE_SECURE: bool = False
+    # lax | none | strict. Si se deja vacio: "none" en production, "lax" en development.
+    COOKIE_SAMESITE: str = ""
     SESSION_MAX_AGE: int = 28800  # 8 horas
     SESSION_COOKIE_NAME: str = "kanban_session"
 
@@ -64,6 +68,21 @@ class Settings(BaseSettings):
     @property
     def is_sqlite(self) -> bool:
         return self.DATABASE_URL.startswith("sqlite")
+
+    @property
+    def cookie_samesite(self) -> str:
+        """Valor SameSite efectivo para la cookie de sesion."""
+        raw = (self.COOKIE_SAMESITE or "").strip().lower()
+        if raw in {"lax", "none", "strict"}:
+            return raw
+        return "none" if self.is_production else "lax"
+
+    @property
+    def cookie_secure(self) -> bool:
+        """Secure debe ser True si SameSite=None (requisito de los navegadores)."""
+        if self.cookie_samesite == "none":
+            return True
+        return bool(self.COOKIE_SECURE) or self.is_production
 
 
 @lru_cache
