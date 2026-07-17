@@ -1,6 +1,4 @@
-# Build context: raíz del monorepo (recomendado con railway.toml en /)
-# o apps/api si Root Directory = apps/api
-
+# Usar solo si Root Directory = apps/api (contexto = apps/api)
 FROM python:3.11-slim
 
 WORKDIR /app
@@ -12,11 +10,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Soporta ambos contextos de build
-COPY apps/api/requirements.txt /tmp/requirements.txt
-RUN pip install --no-cache-dir -r /tmp/requirements.txt
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-COPY apps/api/ /app/
+COPY . .
 
 EXPOSE 8000
 

@@ -70,13 +70,19 @@ GitHub Actions: tests API (pytest) + lint/typecheck/build del frontend.
 
 ## Deploy en Railway
 
-**No despliegues desde la raíz del monorepo.** Railpack detectaría Node y fallaría sin `start`.
+Hay un `railway.toml` en la **raíz** que fuerza build con Docker de la API (`apps/api/Dockerfile`), para que Railpack no intente tratar el monorepo Node.
 
-| Servicio | Root Directory en Railway |
-|----------|---------------------------|
-| API FastAPI | `apps/api` |
-| Frontend Next.js | `apps/web` |
+### Opción A (recomendada, sin tocar Root Directory)
 
-Variables mínimas de la API: `DATABASE_URL`, `SECRET_KEY`, `CORS_ORIGINS`, `ENVIRONMENT=production`, `COOKIE_SECURE=true`.
+1. Servicio Railway → Settings → **Config as Code** apunta a `/railway.toml` (por defecto).
+2. Redeploy.
+3. Variables: `DATABASE_URL`, `SECRET_KEY`, `CORS_ORIGINS`, `ENVIRONMENT=production`, `COOKIE_SECURE=true`.
+
+### Opción B (Root Directory)
+
+| Servicio | Root Directory | Config File |
+|----------|----------------|-------------|
+| API | `apps/api` | `/apps/api/railway.toml` |
+| Web | `apps/web` | `/apps/web/railway.toml` |
 
 Ver [docs/provisioning.md](docs/provisioning.md).
