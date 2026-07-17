@@ -1,0 +1,17 @@
+**/node_modules
+**/.next
+**/.venv
+**/__pycache__
+**/.pytest_cache
+**/*.db
+**/*.sqlite
+.git
+.github
+**/test-results
+**/playwright-report
+apps/api/.venv
+apps/web/.next
+**/.env
+**/.env.local
+*.md
+docs
