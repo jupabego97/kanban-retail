@@ -1,8 +1,4 @@
-# Config as code en la RAÍZ del monorepo.
-# Railway NO sigue Root Directory para este archivo; debe vivir aquí
-# o indicar la ruta absoluta /apps/api/railway.toml en Settings.
-#
-# Fuerza Docker + API Python para evitar que Railpack detecte el package.json de Node.
+# Deploy API desde la raíz del monorepo via Docker.
 
 [build]
 builder = "DOCKERFILE"
@@ -10,8 +6,10 @@ dockerfilePath = "apps/api/Dockerfile"
 watchPatterns = ["apps/api/**"]
 
 [deploy]
-startCommand = "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+# Migraciones ANTES de que el contenedor reciba tráfico / healthcheck.
+preDeployCommand = ["alembic upgrade head"]
+startCommand = "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
 healthcheckPath = "/api/health"
-healthcheckTimeout = 30
+healthcheckTimeout = 120
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 3

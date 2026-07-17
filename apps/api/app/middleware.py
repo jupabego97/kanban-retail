@@ -38,6 +38,10 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         self._hits: Dict[str, Deque[float]] = defaultdict(deque)
 
     async def dispatch(self, request: Request, call_next) -> Response:
+        # No limitar healthchecks ni root (Railway / probes).
+        if request.url.path in {"/api/health", "/", "/docs", "/openapi.json"}:
+            return await call_next(request)
+
         client_ip = request.client.host if request.client else "unknown"
         now = time.monotonic()
         window_start = now - self.window_seconds

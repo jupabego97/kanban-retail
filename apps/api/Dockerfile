@@ -1,6 +1,3 @@
-# Build context: raíz del monorepo (recomendado con railway.toml en /)
-# o apps/api si Root Directory = apps/api
-
 FROM python:3.11-slim
 
 WORKDIR /app
@@ -12,7 +9,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Soporta ambos contextos de build
 COPY apps/api/requirements.txt /tmp/requirements.txt
 RUN pip install --no-cache-dir -r /tmp/requirements.txt
 
@@ -20,4 +16,5 @@ COPY apps/api/ /app/
 
 EXPOSE 8000
 
-CMD ["sh", "-c", "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
+# Solo el servidor; las migraciones van en preDeployCommand de railway.toml
+CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]

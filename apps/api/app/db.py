@@ -9,9 +9,16 @@ from sqlmodel import Session, SQLModel, create_engine
 from app.config import settings
 
 
+def _normalize_database_url(url: str) -> str:
+    """Normaliza URLs de Railway/Heroku (postgres:// -> postgresql://)."""
+    if url.startswith("postgres://"):
+        return "postgresql://" + url[len("postgres://") :]
+    return url
+
+
 def _build_engine():
     """Crea el engine adaptando opciones para SQLite vs PostgreSQL."""
-    url = settings.DATABASE_URL
+    url = _normalize_database_url(settings.DATABASE_URL)
     connect_args: dict = {}
     kwargs: dict = {"echo": False, "pool_pre_ping": True}
 
