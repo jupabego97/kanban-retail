@@ -68,6 +68,15 @@ Cualquier estado abierto → `DESCARTADA`.
 
 GitHub Actions: tests API (pytest) + lint/typecheck/build del frontend.
 
-## Provisioning
+## Deploy en Railway
+
+**No despliegues desde la raíz del monorepo.** Railpack detectaría Node y fallaría sin `start`.
+
+| Servicio | Root Directory en Railway |
+|----------|---------------------------|
+| API FastAPI | `apps/api` |
+| Frontend Next.js | `apps/web` |
+
+Variables mínimas de la API: `DATABASE_URL`, `SECRET_KEY`, `CORS_ORIGINS`, `ENVIRONMENT=production`, `COOKIE_SECURE=true`.
 
 Ver [docs/provisioning.md](docs/provisioning.md).

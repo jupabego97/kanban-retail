@@ -2,10 +2,24 @@
 
 Cada comercio recibe una instalación independiente: API + PostgreSQL en Railway y frontend (Vercel o Railway).
 
+## Importante: Root Directory en Railway
+
+Este repo es un **monorepo**. Si Railway construye desde la raíz detecta Node y falla con `No start command detected`.
+
+Para el servicio de API:
+
+1. Settings → **Root Directory** → `apps/api`
+2. Redeploy
+
+Para el frontend (si también va a Railway):
+
+1. Settings → **Root Directory** → `apps/web`
+2. Variable: `NEXT_PUBLIC_API_URL=https://tu-api.up.railway.app`
+
 ## Checklist
 
 1. Crear proyecto Railway y base PostgreSQL.
-2. Desplegar `apps/api` con variables:
+2. Desplegar `apps/api` (**Root Directory = apps/api**) con variables:
    - `DATABASE_URL`
    - `SECRET_KEY` (largo, aleatorio)
    - `ENVIRONMENT=production`
