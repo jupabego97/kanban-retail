@@ -7,6 +7,9 @@ const monorepoRoot = path.join(__dirname, "../..");
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  output: "standalone",
+  // Necesario en monorepo para que el standalone incluya deps hoisteadas
+  outputFileTracingRoot: monorepoRoot,
   turbopack: {
     root: monorepoRoot,
   },

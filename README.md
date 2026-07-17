@@ -72,17 +72,22 @@ GitHub Actions: tests API (pytest) + lint/typecheck/build del frontend.
 
 Hay un `railway.toml` en la **raíz** que fuerza build con Docker de la API (`apps/api/Dockerfile`), para que Railpack no intente tratar el monorepo Node.
 
-### Opción A (recomendada, sin tocar Root Directory)
+### API (backend) — ya la tienes
 
-1. Servicio Railway → Settings → **Config as Code** apunta a `/railway.toml` (por defecto).
-2. Redeploy.
-3. Variables: `DATABASE_URL`, `SECRET_KEY`, `CORS_ORIGINS`, `ENVIRONMENT=production`, `COOKIE_SECURE=true`.
+1. Config as Code: `/railway.toml`
+2. Variables: `DATABASE_URL`, `SECRET_KEY`, `CORS_ORIGINS`, `ENVIRONMENT=production`, `COOKIE_SECURE=true`
 
-### Opción B (Root Directory)
+### Frontend (URL de la aplicación)
 
-| Servicio | Root Directory | Config File |
-|----------|----------------|-------------|
-| API | `apps/api` | `/apps/api/railway.toml` |
-| Web | `apps/web` | `/apps/web/railway.toml` |
+Necesitas un **segundo servicio** en el mismo proyecto. Guía paso a paso:
 
-Ver [docs/provisioning.md](docs/provisioning.md).
+→ [docs/deploy-frontend-railway.md](docs/deploy-frontend-railway.md)
+
+Resumen:
+
+1. New Service → mismo repo → Config as Code: `/apps/web/railway.toml`
+2. Variable `NEXT_PUBLIC_API_URL` = URL de tu API
+3. En la API, `CORS_ORIGINS` = URL del frontend
+4. La URL pública del servicio **web** es la de la app (`/login`)
+
+Ver también [docs/provisioning.md](docs/provisioning.md).
